@@ -34,16 +34,41 @@ export default function CallbackPage() {
                     // Fetch user data with the access token
                     try {
                         const userResponse = await fetch(
-                            `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/`,
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/profile/`,
                             {
+                                method: 'GET',
                                 headers: {
                                     Authorization: `Bearer ${accessToken}`,
+                                    'Content-Type': 'application/json',
                                 },
                             }
                         )
 
                         if (userResponse.ok) {
-                            const userData = await userResponse.json()
+                            const apiUserData = await userResponse.json()
+                            console.log('API User Data:', apiUserData) // Debug log
+
+                            // Map API data to our User interface
+                            const userData = {
+                                id:
+                                    apiUserData.user.id ||
+                                    apiUserData.user.user_id ||
+                                    'user',
+                                name:
+                                    apiUserData.user.full_name ||
+                                    apiUserData.user.name ||
+                                    apiUserData.user.first_name +
+                                        ' ' +
+                                        apiUserData.user.last_name ||
+                                    'User',
+                                email:
+                                    apiUserData.user.email ||
+                                    'user@example.com',
+                                avatar:
+                                    apiUserData.user.picture ||
+                                    apiUserData.user.avatar ||
+                                    undefined,
+                            }
                             login(userData)
                         }
                     } catch (userError) {

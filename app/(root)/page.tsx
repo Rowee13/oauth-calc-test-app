@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/components/auth-provider'
 
 export default function Home() {
-    const { user, isAuthenticated, isLoading, logout, login } = useAuth()
+    const { user, isAuthenticated, isLoading } = useAuth()
     const router = useRouter()
 
     const handleGetStarted = () => {
@@ -57,61 +57,24 @@ export default function Home() {
                         </p>
 
                         {!isAuthenticated ? (
-                            <div className='mt-8 space-y-4'>
-                                <div>
-                                    <Button
-                                        onClick={handleGetStarted}
-                                        size='lg'
-                                        className='text-lg px-8 py-3'
-                                    >
-                                        Get Started
-                                    </Button>
-                                </div>
-                                {/* <div className='text-sm text-muted-foreground'>
-                                    or
-                                </div>
-                                <div>
-                                    <Button
-                                        onClick={handleTestLogin}
-                                        variant='outline'
-                                        size='lg'
-                                        className='text-lg px-8 py-3'
-                                    >
-                                        Test Login (Demo)
-                                    </Button>
-                                </div> */}
+                            <div className='mt-8'>
+                                <Button
+                                    onClick={handleGetStarted}
+                                    size='lg'
+                                    className='text-lg px-8 py-3'
+                                >
+                                    Get Started
+                                </Button>
                             </div>
                         ) : (
-                            <div className='mt-8 space-y-6'>
-                                <div className='bg-card border rounded-lg p-6 max-w-md'>
-                                    <div className='space-y-4'>
-                                        <div className='flex items-center space-x-4'>
-                                            {user?.avatar && (
-                                                <img
-                                                    src={user.avatar}
-                                                    alt={user.name}
-                                                    className='w-12 h-12 rounded-full'
-                                                />
-                                            )}
-                                            <div>
-                                                <h2 className='text-lg font-semibold text-foreground'>
-                                                    Welcome, {user?.name}!
-                                                </h2>
-                                                <p className='text-muted-foreground text-sm'>
-                                                    {user?.email}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <Button
-                                        onClick={logout}
-                                        variant='outline'
-                                        size='lg'
-                                    >
-                                        Logout
-                                    </Button>
+                            <div className='mt-8 space-y-4'>
+                                <div className='text-center space-y-2'>
+                                    <h2 className='text-3xl font-semibold text-foreground'>
+                                        Welcome, {user?.name}!
+                                    </h2>
+                                    <p className='text-lg text-muted-foreground'>
+                                        {user?.email}
+                                    </p>
                                 </div>
                             </div>
                         )}

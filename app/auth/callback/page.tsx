@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useAuth } from '@/components/auth-provider'
 
@@ -9,10 +9,15 @@ export default function AuthCallbackPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const { login } = useAuth()
+    const [isProcessing, setIsProcessing] = useState(false)
 
     useEffect(() => {
         const handleCallback = async () => {
+            if (isProcessing) return // Prevent multiple processing
+            setIsProcessing(true)
+
             try {
+                console.log('Auth callback processing...')
                 // Get tokens directly from URL parameters (Django sends them directly)
                 const accessToken = searchParams.get('access_token')
                 const refreshToken = searchParams.get('refresh_token')
@@ -25,6 +30,7 @@ export default function AuthCallbackPage() {
                 }
 
                 if (accessToken) {
+                    console.log('Access token found, saving to cookies...')
                     // Save tokens to cookies
                     document.cookie = `access_token=${accessToken}; path=/; max-age=${7 * 24 * 60 * 60}` // 7 days
                     if (refreshToken) {
@@ -33,17 +39,47 @@ export default function AuthCallbackPage() {
 
                     // Fetch user data with the access token
                     try {
+                        console.log('Fetching user profile...')
                         const userResponse = await fetch(
-                            `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/`,
+                            `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/profile/`,
                             {
+                                method: 'GET',
                                 headers: {
                                     Authorization: `Bearer ${accessToken}`,
+                                    'Content-Type': 'application/json',
                                 },
                             }
                         )
 
                         if (userResponse.ok) {
-                            const userData = await userResponse.json()
+                            const apiUserData = await userResponse.json()
+                            console.log(
+                                'Auth Callback - API User Data:',
+                                apiUserData
+                            ) // Debug log
+
+                            // Map API data to our User interface
+                            const userData = {
+                                id:
+                                    apiUserData.user.id ||
+                                    apiUserData.user.user_id ||
+                                    'user',
+                                name:
+                                    apiUserData.user.full_name ||
+                                    apiUserData.user.name ||
+                                    apiUserData.user.first_name +
+                                        ' ' +
+                                        apiUserData.user.last_name ||
+                                    'User',
+                                email:
+                                    apiUserData.user.email ||
+                                    'user@example.com',
+                                avatar:
+                                    apiUserData.user.picture ||
+                                    apiUserData.user.avatar ||
+                                    undefined,
+                            }
+                            console.log('Logging in user:', userData)
                             login(userData)
                         }
                     } catch (userError) {
@@ -56,10 +92,13 @@ export default function AuthCallbackPage() {
                         })
                     }
 
-                    // Redirect to home
-                    router.push('/')
+                    // Redirect to home after a short delay
+                    setTimeout(() => {
+                        console.log('Redirecting to home...')
+                        router.push('/')
+                    }, 500)
                 } else {
-                    // No access token, redirect to home
+                    console.log('No access token, redirecting to home')
                     router.push('/')
                 }
             } catch (error) {
@@ -69,7 +108,7 @@ export default function AuthCallbackPage() {
         }
 
         handleCallback()
-    }, [router, searchParams, login])
+    }, []) // Removed dependencies to prevent re-runs
 
     return (
         <section className='flex-grow'>
