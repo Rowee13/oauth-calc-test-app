@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Bebas_Neue, Outfit } from 'next/font/google'
 
+import { AuthProvider } from '@/components/auth-provider'
 import { ThemeProvider } from '@/components/theme-provider'
 
 import { siteConfig } from '@/constant/config'
@@ -43,7 +44,7 @@ export default function RootLayout({
                     enableSystem
                     disableTransitionOnChange
                 >
-                    {children}
+                    <AuthProvider>{children}</AuthProvider>
                 </ThemeProvider>
             </body>
         </html>
