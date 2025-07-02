@@ -1,6 +1,6 @@
 export const siteConfig = {
-    title: 'PHS NextJS Starter',
+    title: 'Calculation Oauth Test App',
     description:
-        'A NextJS starter template created for Parrow Horrizon Studio.',
-    url: 'https://phs-next-starter.parrowhorrizonstudio.com',
+        'Quick test app for OAuth2.0 authentication with calculation functionality',
+    url: 'https://oauth-test-app.vercel.app',
 }

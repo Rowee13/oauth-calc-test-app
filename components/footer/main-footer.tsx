@@ -15,13 +15,13 @@ const MainFooter = () => {
                             rel='noopener noreferrer'
                             className='hover:text-cyan-500'
                         >
-                            Parrow Horrizon Studio
+                            Test app made by Rowee Andrew Apor
                         </Link>{' '}
-                        - {new Date().getFullYear()}
+                        - July 2025
                     </p>
                     <div>
                         <Link
-                            href='https://github.com/Rowee13/phs-nextjs-starter/tree/master'
+                            href='https://github.com/Rowee13/oauth-calc-test-app'
                             passHref
                             target='_blank'
                             rel='noopener noreferrer'
