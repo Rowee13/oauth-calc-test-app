@@ -1,11 +1,11 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 
 import { useAuth } from '@/components/auth-provider'
 
-export default function CallbackPage() {
+function CallbackPageContent() {
     const router = useRouter()
     const searchParams = useSearchParams()
     const { login } = useAuth()
@@ -57,9 +57,7 @@ export default function CallbackPage() {
                                 name:
                                     apiUserData.user.full_name ||
                                     apiUserData.user.name ||
-                                    apiUserData.user.first_name +
-                                        ' ' +
-                                        apiUserData.user.last_name ||
+                                    `${apiUserData.user.first_name || ''} ${apiUserData.user.last_name || ''}`.trim() ||
                                     'User',
                                 email:
                                     apiUserData.user.email ||
@@ -108,5 +106,27 @@ export default function CallbackPage() {
                 </div>
             </div>
         </section>
+    )
+}
+
+export default function CallbackPage() {
+    return (
+        <Suspense
+            fallback={
+                <section className='flex-grow'>
+                    <div className='relative isolate px-6 pt-14 lg:px-8'>
+                        <div className='mx-auto max-w-2xl py-32 sm:py-48 lg:py-56'>
+                            <div className='text-center'>
+                                <div className='text-lg text-muted-foreground'>
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
+        >
+            <CallbackPageContent />
+        </Suspense>
     )
 }

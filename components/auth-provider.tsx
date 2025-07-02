@@ -62,9 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         name:
                             apiUserData.user.full_name ||
                             apiUserData.user.name ||
-                            apiUserData.user.first_name +
-                                ' ' +
-                                apiUserData.user.last_name ||
+                            `${apiUserData.user.first_name || ''} ${apiUserData.user.last_name || ''}`.trim() ||
                             'User',
                         email: apiUserData.user.email || 'user@example.com',
                         avatar:
